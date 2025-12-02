@@ -1,0 +1,61 @@
+from telebot import *
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+from random import *
+
+priv = ['Привет, ', 'Здравствуйте, ', 'Привяо, ', 'Хэлоу, ', 'Ку, ', 'КУ, ', 'Приветствую, ',
+        'Добрый день, ', 'Здравствуй, ']
+zodiak = ["овен", "телец", "близнецы", "рак", "лев", "дева", "весы",
+          "скорпион", "стрелец", "козерог", "водолей", "рыбы"]
+nach = [' вы увидите ', ' найдёте ', ' в ближайшем будущем вас ждёт ', ' сегодня вы увидите',
+        ' завтра обнаружите ', ' в этом году вас ждёт ', ' этой ночью вы заметите ']
+sred = ['приятный сюрприз ', 'подарок ', 'новость ', 'интересную вещь ', 'открытку ']
+konec = ['от любимого(ой)!', 'от незнакомца!', 'из ниоткуда?!', 'от близкого!']
+
+predscaz = [0] * 12
+for i in range(12):
+    predscaz[i] = choice(priv) + zodiak[i] + choice(nach) + choice(sred) + choice(konec)
+
+bot = TeleBot('8272464178:AAHaLqkj8c_21dVHdVRLFUF1s2tdfHG17aM')
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = InlineKeyboardMarkup()
+    # Замени URL на адрес своего Mini App (разместить на GitHub Pages, Vercel, Netlify)
+    web_app = InlineKeyboardButton('🔮 Открыть гороскоп', web_app=WebAppInfo(url='https://YOUR-MINI-APP-URL.com/index.html'))
+    markup.add(web_app)
+    bot.send_message(message.from_user.id, 'Привет! Нажми кнопку, чтобы узнать свой гороскоп в Mini App!', reply_markup=markup)
+
+@bot.message_handler(commands=['help'])
+def help_command(message):
+    bot.send_message(message.from_user.id, 'Напиши название знака зодиака (овен, телец...) или нажми кнопку Mini App!')
+
+# Обработчик данных из Mini App
+@bot.message_handler(content_types=['web_app_data'])
+def handle_web_app_data(message):
+    zodiac_sign = message.web_app_data.data.lower().strip()
+    
+    # Поиск предсказания для знака
+    found = False
+    for i in range(12):
+        if zodiac_sign == zodiak[i]:
+            bot.send_message(message.from_user.id, predscaz[i])
+            found = True
+            break
+    
+    if not found:
+        bot.send_message(message.from_user.id, 'Знак зодиака не распознан. Попробуйте снова!')
+
+@bot.message_handler(content_types=['text'])
+def get_text_messages(message):
+    text = message.text.lower().strip()
+
+    if text == '/zz':
+        bot.send_message(message.from_user.id, 'ПРИВЕТСТВУЮ! Введи свой знак зодиака: ' + ', '.join(zodiak))
+    else:
+        found = False
+        for i in range(12):
+            if text == zodiak[i]:
+                bot.send_message(message.from_user.id, predscaz[i])
+                found = True
+
+bot.polling(none_stop=True, interval=0)
