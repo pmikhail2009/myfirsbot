@@ -6,61 +6,133 @@
     <title>Гороскоп</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            padding: 20px;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            min-height: 100vh;
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+        
         select, button {
             width: 100%;
             padding: 15px;
             margin: 10px 0;
             font-size: 16px;
-            border-radius: 8px;
+            border-radius: 12px;
+            border: 2px solid var(--tg-theme-button-color, #3390ec);
         }
+        
+        select {
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            color: var(--tg-theme-text-color, #000000);
+        }
+        
         button {
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
+            background-color: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #ffffff);
             border: none;
             cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.3s;
         }
+        
+        button:hover:not(:disabled) {
+            opacity: 0.8;
+        }
+        
         button:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
+            cursor: not-allowed;
         }
+        
         #result {
             margin-top: 20px;
-            padding: 15px;
-            background-color: var(--tg-theme-secondary-bg-color);
-            border-radius: 8px;
+            padding: 20px;
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 12px;
             display: none;
+            animation: slideIn 0.3s ease-out;
         }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .prediction {
             font-size: 18px;
-            line-height: 1.6;
+            line-height: 1.8;
+            text-align: center;
+        }
+        
+        .error {
+            color: #ff3b30;
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(255, 59, 48, 0.1);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading:after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
         }
     </style>
 </head>
 <body>
-    <h2>🔮 Выберите знак зодиака:</h2>
+    <h2>🔮 Гороскоп</h2>
+    
     <select id="zodiac">
-        <option value="овен">♈ Овен</option>
-        <option value="телец">♉ Телец</option>
-        <option value="близнецы">♊ Близнецы</option>
-        <option value="рак">♋ Рак</option>
-        <option value="лев">♌ Лев</option>
-        <option value="дева">♍ Дева</option>
-        <option value="весы">♎ Весы</option>
-        <option value="скорпион">♏ Скорпион</option>
-        <option value="стрелец">♐ Стрелец</option>
-        <option value="козерог">♑ Козерог</option>
-        <option value="водолей">♒ Водолей</option>
-        <option value="рыбы">♓ Рыбы</option>
+        <option value="">Выберите знак зодиака...</option>
+        <option value="овен">♈ Овен (21.03 - 19.04)</option>
+        <option value="телец">♉ Телец (20.04 - 20.05)</option>
+        <option value="близнецы">♊ Близнецы (21.05 - 20.06)</option>
+        <option value="рак">♋ Рак (21.06 - 22.07)</option>
+        <option value="лев">♌ Лев (23.07 - 22.08)</option>
+        <option value="дева">♍ Дева (23.08 - 22.09)</option>
+        <option value="весы">♎ Весы (23.09 - 22.10)</option>
+        <option value="скорпион">♏ Скорпион (23.10 - 21.11)</option>
+        <option value="стрелец">♐ Стрелец (22.11 - 21.12)</option>
+        <option value="козерог">♑ Козерог (22.12 - 19.01)</option>
+        <option value="водолей">♒ Водолей (20.01 - 18.02)</option>
+        <option value="рыбы">♓ Рыбы (19.02 - 20.03)</option>
     </select>
+    
     <button id="getPrediction">✨ Получить предсказание</button>
     
     <div id="result">
-        <h3>📜 Ваше предсказание:</h3>
+        <h3 style="text-align: center; margin-bottom: 15px;">📜 Ваше предсказание:</h3>
         <p class="prediction" id="predictionText"></p>
     </div>
 
@@ -68,16 +140,31 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-
-        document.getElementById('getPrediction').addEventListener('click', async () => {
-            const button = document.getElementById('getPrediction');
-            const zodiac = document.getElementById('zodiac').value;
+        
+        // ВАЖНО: Замени на свой URL после развертывания на Render/PythonAnywhere
+        const API_URL = 'http://127.0.0.1:5000';  // Для локального тестирования
+        // const API_URL = 'https://твой-сервер.onrender.com';  // Для продакшена
+        
+        const button = document.getElementById('getPrediction');
+        const select = document.getElementById('zodiac');
+        const resultDiv = document.getElementById('result');
+        const predictionText = document.getElementById('predictionText');
+        
+        button.addEventListener('click', async () => {
+            const zodiac = select.value;
             
+            if (!zodiac) {
+                alert('Пожалуйста, выберите знак зодиака!');
+                return;
+            }
+            
+            // Отключаем кнопку и показываем загрузку
             button.disabled = true;
-            button.textContent = '⏳ Загрузка...';
+            button.textContent = '⏳ Загрузка';
+            resultDiv.style.display = 'none';
             
             try {
-                const response = await fetch('https://твой-backend.herokuapp.com/predict', {
+                const response = await fetch(`${API_URL}/predict`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -87,14 +174,31 @@
                 
                 const data = await response.json();
                 
-                document.getElementById('predictionText').textContent = data.prediction;
-                document.getElementById('result').style.display = 'block';
-                document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+                if (data.success) {
+                    predictionText.textContent = data.prediction;
+                    resultDiv.style.display = 'block';
+                    
+                    // Прокрутка к результату
+                    setTimeout(() => {
+                        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                } else {
+                    alert('Ошибка: ' + data.error);
+                }
+                
             } catch (error) {
-                alert('Ошибка загрузки предсказания');
+                console.error('Ошибка:', error);
+                alert('Не удалось подключиться к серверу. Проверьте, что Flask запущен.');
             } finally {
                 button.disabled = false;
                 button.textContent = '✨ Получить предсказание';
+            }
+        });
+        
+        // Генерация при нажатии Enter в select
+        select.addEventListener('change', () => {
+            if (select.value) {
+                button.click();
             }
         });
     </script>
