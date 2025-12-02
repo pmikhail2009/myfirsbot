@@ -15,7 +15,7 @@ predscaz = [0] * 12
 for i in range(12):
     predscaz[i] = choice(priv) + zodiak[i] + choice(nach) + choice(sred) + choice(konec)
 
-bot = TeleBot('8272464178:AAHaLqkj8c_21dVHdVRLFUF1s2tdfHG17aM')
+bot = TeleBot('YOUR TOKEN')
 
 @bot.message_handler(commands=['start'])
 def start(message):
