@@ -13,58 +13,187 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             padding: 20px;
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
             min-height: 100vh;
+            /* Используем цвета темы Telegram */
+            background: linear-gradient(135deg, var(--tg-theme-bg-color, #ffffff) 0%, var(--tg-theme-secondary-bg-color, #f0f0f0) 100%);
+            color: var(--tg-theme-text-color, #000000);
         }
         
-        h2 {
-            margin-bottom: 20px;
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .header {
             text-align: center;
-            font-size: 24px;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease-out;
         }
         
-        select, button {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: var(--tg-theme-hint-color, #999999);
+            font-size: 14px;
+        }
+        
+        .card {
+            background: var(--tg-theme-secondary-bg-color, #ffffff);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--tg-theme-text-color, #000000);
             font-size: 16px;
-            border-radius: 12px;
-            border: 2px solid var(--tg-theme-button-color, #3390ec);
         }
         
         select {
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            border: 2px solid var(--tg-theme-button-color, #3390ec);
+            border-radius: 12px;
+            background-color: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--tg-theme-button-color, #3390ec);
+            box-shadow: 0 0 0 4px rgba(51, 144, 236, 0.1);
         }
         
         button {
-            background-color: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 600;
             border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--tg-theme-button-color, #3390ec) 0%, #667eea 100%);
+            color: var(--tg-theme-button-text-color, #ffffff);
             cursor: pointer;
-            font-weight: bold;
-            transition: opacity 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(51, 144, 236, 0.3);
+            margin-top: 15px;
         }
         
         button:hover:not(:disabled) {
-            opacity: 0.8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(51, 144, 236, 0.4);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(0);
         }
         
         button:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
+            transform: none !important;
         }
         
         #result {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            border-radius: 12px;
             display: none;
-            animation: slideIn 0.3s ease-out;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-card::before {
+            content: '✨';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 40px;
+            opacity: 0.3;
+        }
+        
+        .result-card h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .prediction {
+            font-size: 18px;
+            line-height: 1.8;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .zodiac-icon {
+            font-size: 50px;
+            text-align: center;
+            margin-bottom: 15px;
+            animation: bounce 1s ease infinite;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        /* Анимации */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         @keyframes slideIn {
@@ -78,29 +207,13 @@
             }
         }
         
-        .prediction {
-            font-size: 18px;
-            line-height: 1.8;
-            text-align: center;
-        }
-        
-        .error {
-            color: #ff3b30;
-            text-align: center;
-            padding: 15px;
-            background-color: rgba(255, 59, 48, 0.1);
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .loading:after {
-            content: '...';
-            animation: dots 1.5s steps(4, end) infinite;
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
         }
         
         @keyframes dots {
@@ -108,32 +221,50 @@
             40% { content: '..'; }
             60%, 100% { content: '...'; }
         }
+        
+        /* Адаптация для тёмной темы */
+        @media (prefers-color-scheme: dark) {
+            .card {
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+        }
     </style>
 </head>
 <body>
-    <h2>🔮 Гороскоп</h2>
-    
-    <select id="zodiac">
-        <option value="">Выберите знак зодиака...</option>
-        <option value="овен">♈ Овен (21.03 - 19.04)</option>
-        <option value="телец">♉ Телец (20.04 - 20.05)</option>
-        <option value="близнецы">♊ Близнецы (21.05 - 20.06)</option>
-        <option value="рак">♋ Рак (21.06 - 22.07)</option>
-        <option value="лев">♌ Лев (23.07 - 22.08)</option>
-        <option value="дева">♍ Дева (23.08 - 22.09)</option>
-        <option value="весы">♎ Весы (23.09 - 22.10)</option>
-        <option value="скорпион">♏ Скорпион (23.10 - 21.11)</option>
-        <option value="стрелец">♐ Стрелец (22.11 - 21.12)</option>
-        <option value="козерог">♑ Козерог (22.12 - 19.01)</option>
-        <option value="водолей">♒ Водолей (20.01 - 18.02)</option>
-        <option value="рыбы">♓ Рыбы (19.02 - 20.03)</option>
-    </select>
-    
-    <button id="getPrediction">✨ Получить предсказание</button>
-    
-    <div id="result">
-        <h3 style="text-align: center; margin-bottom: 15px;">📜 Ваше предсказание:</h3>
-        <p class="prediction" id="predictionText"></p>
+    <div class="container">
+        <div class="header">
+            <h1>🔮 Гороскоп</h1>
+            <p>Узнайте, что готовят вам звёзды</p>
+        </div>
+        
+        <div class="card">
+            <label for="zodiac">Выберите свой знак зодиака:</label>
+            <select id="zodiac">
+                <option value="">— Выберите знак —</option>
+                <option value="овен">♈ Овен (21.03 - 19.04)</option>
+                <option value="телец">♉ Телец (20.04 - 20.05)</option>
+                <option value="близнецы">♊ Близнецы (21.05 - 20.06)</option>
+                <option value="рак">♋ Рак (21.06 - 22.07)</option>
+                <option value="лев">♌ Лев (23.07 - 22.08)</option>
+                <option value="дева">♍ Дева (23.08 - 22.09)</option>
+                <option value="весы">♎ Весы (23.09 - 22.10)</option>
+                <option value="скорпион">♏ Скорпион (23.10 - 21.11)</option>
+                <option value="стрелец">♐ Стрелец (22.11 - 21.12)</option>
+                <option value="козерог">♑ Козерог (22.12 - 19.01)</option>
+                <option value="водолей">♒ Водолей (20.01 - 18.02)</option>
+                <option value="рыбы">♓ Рыбы (19.02 - 20.03)</option>
+            </select>
+            
+            <button id="getPrediction">✨ Получить предсказание</button>
+        </div>
+        
+        <div id="result">
+            <div class="result-card">
+                <div class="zodiac-icon" id="zodiacIcon"></div>
+                <h3>Ваше предсказание</h3>
+                <p class="prediction" id="predictionText"></p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -141,27 +272,46 @@
         tg.ready();
         tg.expand();
         
-        // ВАЖНО: Замени на свой URL после развертывания на Render/PythonAnywhere
-        const API_URL = 'https://horoscope-bot-backend.onrender.com/';
-        // Для локального тестирования
-        // const API_URL = 'https://твой-сервер.onrender.com';  // Для продакшена
+        // Адаптация под тему Telegram
+        tg.setHeaderColor(tg.themeParams.secondary_bg_color || '#ffffff');
+        tg.setBackgroundColor(tg.themeParams.bg_color || '#ffffff');
+        
+        // ЗАМЕНИ на свой URL от Render
+        const API_URL = 'https://твой-сервер.onrender.com';
         
         const button = document.getElementById('getPrediction');
         const select = document.getElementById('zodiac');
         const resultDiv = document.getElementById('result');
         const predictionText = document.getElementById('predictionText');
+        const zodiacIcon = document.getElementById('zodiacIcon');
+        
+        // Иконки знаков зодиака
+        const zodiacIcons = {
+            'овен': '♈',
+            'телец': '♉',
+            'близнецы': '♊',
+            'рак': '♋',
+            'лев': '♌',
+            'дева': '♍',
+            'весы': '♎',
+            'скорпион': '♏',
+            'стрелец': '♐',
+            'козерог': '♑',
+            'водолей': '♒',
+            'рыбы': '♓'
+        };
         
         button.addEventListener('click', async () => {
             const zodiac = select.value;
             
             if (!zodiac) {
-                alert('Пожалуйста, выберите знак зодиака!');
+                tg.showAlert('Пожалуйста, выберите знак зодиака!');
                 return;
             }
             
             // Отключаем кнопку и показываем загрузку
             button.disabled = true;
-            button.textContent = '⏳ Загрузка';
+            button.innerHTML = '⏳ Загрузка<span class="loading"></span>';
             resultDiv.style.display = 'none';
             
             try {
@@ -176,27 +326,36 @@
                 const data = await response.json();
                 
                 if (data.success) {
+                    // Добавляем иконку знака
+                    zodiacIcon.textContent = zodiacIcons[zodiac] || '✨';
+                    
+                    // Показываем предсказание
                     predictionText.textContent = data.prediction;
                     resultDiv.style.display = 'block';
+                    
+                    // Вибрация при получении результата
+                    if (tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    }
                     
                     // Прокрутка к результату
                     setTimeout(() => {
                         resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                     }, 100);
                 } else {
-                    alert('Ошибка: ' + data.error);
+                    tg.showAlert('Ошибка: ' + data.error);
                 }
                 
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('Не удалось подключиться к серверу. Проверьте, что Flask запущен.');
+                tg.showAlert('Не удалось подключиться к серверу. Попробуйте позже.');
             } finally {
                 button.disabled = false;
                 button.textContent = '✨ Получить предсказание';
             }
         });
         
-        // Генерация при нажатии Enter в select
+        // Генерация при изменении select
         select.addEventListener('change', () => {
             if (select.value) {
                 button.click();
